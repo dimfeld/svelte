@@ -565,7 +565,8 @@ export default class EachBlockWrapper extends Wrapper {
 						${out}(#i);
 					}
 					@check_outros();
-				`;
+					${!fixed_length && b`${view_length} = ${data_length};`}
+					`;
 			} else {
 				remove_old_blocks = b`
 					for (${this.block.has_update_method ? null : x`#i = ${data_length}`}; #i < ${this.block.has_update_method ? view_length : '#old_length'}; #i += 1) {
@@ -578,7 +579,7 @@ export default class EachBlockWrapper extends Wrapper {
 			// We declare `i` as block scoped here, as the `remove_old_blocks` code
 			// may rely on continuing where this iteration stopped.
 			const update = b`
-				${!this.block.has_update_method && b`const #old_length = ${this.vars.each_block_value}.length;`}
+				${!this.block.has_update_method && b`const #old_length = ${view_length};`}
 				${this.vars.each_block_value} = ${snippet};
 				${this.renderer.options.dev && b`@validate_each_argument(${this.vars.each_block_value});`}
 
